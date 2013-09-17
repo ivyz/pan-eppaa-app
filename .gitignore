@@ -1,1 +1,4 @@
+.fastdev.lock
+build.log
 tmp
+/build
