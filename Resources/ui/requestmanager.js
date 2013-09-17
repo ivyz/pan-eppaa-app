@@ -16,7 +16,7 @@ function requestmanager() {
 
 var activityIndicator = require('activityIndicator');
 
-requestmanager.base_url = 'http://192.168.2.129:8080';
+requestmanager.base_url = 'http://192.168.2.146:6543';
 requestmanager.busyCursor = Ti.Platform.osname == 'android' ? Ti.UI.createActivityIndicator({
     top: '50%',
     style: Ti.UI.iPhone.ActivityIndicatorStyle.BIG,
@@ -42,8 +42,8 @@ requestmanager.wait = function(activate, message) {
 
 requestmanager.urlmap = function(url) {
     return {
-        dogs: '/dogs',
-        events: '/events'
+        dogs: '/dogs_json',
+        events: '/events_json'
     }[url];
 };
 
@@ -62,13 +62,15 @@ requestmanager.manageErrors = function(message, caption) {
 requestmanager.request = function(urlmapping, callback) {
     requestmanager.wait(true);
     var request = Ti.Network.createHTTPClient();
-    var url = requestmanager.urlmap(urlmapping);
+    var url = requestmanager.base_url + requestmanager.urlmap(urlmapping);
     request.open('GET', url);
 
     request.onload = function() {
+    	var json_response;
         try {
             if (request.responseText) {
-                var json_response = JSON.parse(request.responseText);
+            	
+                json_response = JSON.parse(request.responseText);
                 if (json_response.success === false) {
                     requestmanager.manageErrors(json_response.message);
                     return;
@@ -78,7 +80,7 @@ requestmanager.request = function(urlmapping, callback) {
         catch (e) {
             requestmanager.manageErrors(null);
         }
-        return callback(json_response);
+        return callback(JSON.parse(request.responseText));
     };
 
     request.onerror = function() {
