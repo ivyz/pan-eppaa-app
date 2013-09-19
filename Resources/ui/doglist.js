@@ -27,7 +27,6 @@ function doglist() {
     var rows = [];
 
     var onDogsLoaded = function(response) {
-    	alert(response.dogs);
     	var dogs =response.dogs; 
     	for (var i=0; i < dogs.length; i ++) {
     		var d = dogs[i];
